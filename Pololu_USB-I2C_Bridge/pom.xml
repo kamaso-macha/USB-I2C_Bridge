@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	
+	<name>Pololu USB - I2C Bridge</name>
+	
+	<groupId>lan.sdi.usb2iic</groupId>
+	<artifactId>USB_I2C_Bridge</artifactId>
+	
+	<version>1.0-SNAPSHOT</version>
+	
+	<packaging>jar</packaging>
+	
+	<properties>
+	
+		<major.minor>1.0</major.minor>
+		<build.number>${buildNumber}</build.number>
+		<full.version>${major.minor}.${buildNumber}</full.version>
+		<destinationFolder>${settings.localRepository}/lan/sdi/usb2iic/${artifactId}</destinationFolder>
+	
+		<java.version>11</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+	
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+		<junit.jupiter.version>5.6.2</junit.jupiter.version>
+		<mockito.core.version>5.10.0</mockito.core.version>
+	
+		<slf4j.version>2.0.9</slf4j.version>
+		<log4j.version>2.20.0</log4j.version>
+	
+		<jserialcomm.version>2.10.4</jserialcomm.version>
+		
+	</properties>
+
+
+	<scm>
+		<connection>scm:svn:http://127.0.0.1/dummy</connection>
+		<developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://127.0.0.1/dummy</url>
+	</scm>
+	
+
+	<build>
+
+    	<finalName>${project.artifactId}-${major.minor}.${buildNumber}</finalName>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>buildnumber</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<format>{0,number}</format>
+					<items>
+						<item>buildNumber</item>
+					</items>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+<!-- 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+-->
+
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-antrun-plugin</artifactId>
+			    <version>3.1.0</version><!--$NO-MVN-MAN-VER$-->
+			    <executions>
+			        <execution>
+			            <id>copy-jar-to-local-repo</id>
+			            <phase>install</phase>
+			            <goals>
+			                <goal>run</goal>
+			            </goals>
+			            <configuration>
+			                <target>
+			                
+			                	<echo message="Copying JAR to ${destinationFolder}/${full.version}" />
+			                
+			                    <mkdir dir="${destinationFolder}/${full.version}"/>
+			
+			                    <copy
+			                        file="${project.build.directory}/${artifactId}-${full.version}.jar"
+			                        todir="${destinationFolder}/${full.version}"
+			                        overwrite="true"/>
+			                        
+			                    <copy
+			                        file="${project.build.directory}/${artifactId}-${full.version}-sources.jar"
+			                        todir="${destinationFolder}/${full.version}"
+			                        overwrite="true"/>
+			                        
+			                    <copy
+			                        file="${basedir}/pom.xml"
+			                        tofile="${destinationFolder}/${full.version}/${artifactId}-${full.version}.pom"
+			                        overwrite="true"/>
+			                        
+			                </target>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<release>${java.version}</release>
+				</configuration>
+			</plugin>
+
+		</plugins>		
+		
+	</build>
+	
+	<dependencies>
+
+		<dependency>
+			<groupId>com.fazecast</groupId>
+			<artifactId>jSerialComm</artifactId>
+			<version>${jserialcomm.version}</version>
+		</dependency>
+		
+
+		<!--  include logging libraries -->  
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-api</artifactId>
+		    <version>2.24.3</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.24.3</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-slf4j2-impl</artifactId>
+		    <version>2.24.3</version>
+		</dependency>
+
+		<!--  include test and mocking libraries -->
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${mockito.core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+	</dependencies>
+	
+</project>

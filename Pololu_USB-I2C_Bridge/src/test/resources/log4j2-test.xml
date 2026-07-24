@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration strict="false"
+           xmlns="http://logging.apache.org/log4j/2.0/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+           <!-- xsi:schemaLocation="http://logging.apache.org/log4j/2.0/config 
+           https://raw.githubusercontent.com/apache/logging-log4j2/log4j-2.8.2/log4j-core/src/main/resources/Log4j-config.xsd" -->
+
+
+	<!-- log4j2-test.xml -->
+
+
+	<Appenders>
+
+		<Console name="LogToConsole" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}: %L - %msg%n" />
+		</Console>
+
+		<File name="DebugFile" fileName="./log/Debug.log" append="false">
+			<PatternLayout>
+				<Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}: %L - %msg%n</Pattern>
+			</PatternLayout>
+		</File>
+
+	</Appenders>
+
+	<Loggers>
+
+		<!-- Logger name="i2cDevice.register" level="all" additivity="false"> <AppenderRef 
+			ref="LogToConsole"/> <AppenderRef ref="DebugFile"/> </Logger -->
+
+
+		<Root level="all">
+			<AppenderRef ref="LogToConsole" />
+			<AppenderRef ref="DebugFile" />
+			<AppenderRef ref="TestAppender" />
+		</Root>
+
+	</Loggers>
+
+</Configuration>
