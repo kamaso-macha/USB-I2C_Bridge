@@ -84,7 +84,7 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 	
 	private final Logger logger = LoggerFactory.getLogger(USB_I2C_BridgeImpl.class);
 	
-	// command codes as defined in vendors documentation
+	/** command codes as defined in vendors documentation */
 	public static final byte WRITE_COMMAND				= (byte) 0x0_91;
 	public static final byte READ_COMMAND				= (byte) 0x0_92;
 	public static final byte SET_MODE_COMMAND			= (byte) 0x0_94;
@@ -96,13 +96,14 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 	public static final byte ENABLE_VCC_OUT_COMMAND		= (byte) 0x0_A4;
 	public static final byte GET_DEV_INFO_COMMAND		= (byte) 0x0_A7;
 	
-	// size of information elements respective buffers
+	/** size of information elements respective buffers */
 	public static final int CMD_STATUS_SIZE				= 1;
 	public static final int WR_CMD_HEADER_SIZE			= 3;
 	public static final int RD_CMD_HEADER_SIZE			= 3;
 	public static final int SET_MODE_CMD_HEADER_SIZE	= 2;
 	public static final int WRRD_CMD_HEADER_SIZE		= 4;
 	
+	/** timing constants */ 
 	protected static final int TIME_OUT_MODE	= SerialPort.TIMEOUT_READ_BLOCKING;
 	protected static final int RD_TIME_OUT		= 1000;		// milli seconds
 	protected static final int WR_TIME_OUT		= 1000;		// milli seconds
@@ -132,7 +133,8 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 	 * @param aBridgeName The name of the virtual COM port as enlisted in the 
 	 * COM port list of the host.
 	 * 
-	 * @throws USB_I2C_Exception if aBridgeName is null or empty.
+	 * @throws USB_I2C_Exception if aBridgeName is null or empty or the desired
+	 * device can't be opened.
 	 * 
 	 */
 	public USB_I2C_BridgeImpl(final String aBridgeName) throws USB_I2C_Exception  { 
@@ -216,7 +218,7 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 	 * Call the getLastError() method to obtain detailed informations about
 	 * the error.
 	 * 
-	 * @returns A byte: bit 0 represents SCL, bit 1 represents SDA state.
+	 * @return A byte: bit 0 represents SCL, bit 1 represents SDA state.
 	 * 
 	 * @throws USB_I2C_Exception If either the write command or read data command fails.
 	 * 
@@ -257,7 +259,7 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 	 * 
 	 * @return A U2iResponse representing the status of this operation.
 	 * 
-	 * @see lan.sdi.usb2iic.pololu.U2iResponse {@link lan.sdi.usb2iic.pololu.pololu.U2iResponse}
+	 * @see lan.sdi.usb2iic.pololu.U2iResponse {@link lan.sdi.usb2iic.pololu.U2iResponse}
 	 */
 	@Override
 	public U2iResponse enableVccOut(final VCC_STATE aVccState) {
@@ -669,8 +671,7 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 	 * <a href="https://www.nxp.com/docs/en/user-guide/UM10204.pdf">I²C-bus specification and user manual</a>
 	 * <p>
 	 * @param aMode The desired operation mode.<br>
-	 * <b>Please read the data sheets of the connected devices along with the I2C bus 
-	 * specification to choose the correct bus operation mode!</b 
+	 * <b>Please read the data sheets of the connected devices along with the I2C bus specification to choose the correct bus operation mode!</b>
 	 */
 	@Override
 	public U2iResponse setI2cMode(final I2C_MODE aMode) {

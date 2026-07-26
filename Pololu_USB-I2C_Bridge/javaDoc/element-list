@@ -1,0 +1,5 @@
+lan.sdi.usb2iic.core
+lan.sdi.usb2iic.pololu
+lan.sdi.usb2iic.pololu.impl
+lan.sdi.usb2iic.pololu.model
+lan.sdi.utility

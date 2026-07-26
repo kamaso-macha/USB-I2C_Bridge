@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"lan.sdi.usb2iic.core"},{"l":"lan.sdi.usb2iic.pololu"},{"l":"lan.sdi.usb2iic.pololu.impl"},{"l":"lan.sdi.usb2iic.pololu.model"},{"l":"lan.sdi.utility"}]

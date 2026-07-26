@@ -58,6 +58,22 @@ public final class U2iResponse {
 	
 	
 	/**
+	 * DAO to transport the result of an operation to the caller.
+	 * 
+	 * Please consult <a href="https://www.pololu.com/docs/0J89/7">Command reference</a> 
+	 * and <a href="https://www.pololu.com/docs/0J89/8">Error codes</a> for detailed information. 
+	 * 
+	 * @param aCommand The ID of the command which was executed as the U2iResponse was created.
+	 * 
+	 * @param aErrorCode The Pololu I2C error code. See <a href="https://www.pololu.com/docs/0J89/8">Error codes</a> for more details.
+	 *  
+	 * @param aBytesWritten The number of bytes written by the issued command. <br>
+	 * This number should be 1 for every non write command. For write commands, it must be nbrOfBytesToWrite + 1.
+	 *  
+	 * @param aBytesRead The number of bytes read. <br>
+	 * This number should be 1 for every non read command. For read commands, it must be nbrOfBytesToRead + 1.<br>
+	 * <b>Note: </b><br>
+	 * Some commands do NOT respond with a error information! For those kind, the value is zero.
 	 * 
 	 */
 	public U2iResponse(final byte aCommand, final int aErrorCode, final int aBytesWritten, final int aBytesRead) {
