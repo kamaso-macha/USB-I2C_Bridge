@@ -1,8 +1,7 @@
 # USB-I2C_Bridge
-This repository contains libraries for USB to I2C bridges which give the ability to connect I2C devices to a PC or Laptop.
-Thereby it is possible to cross develop I2C device software for target  systems like Raspberry Pi, Banana Pi, Odroid, e.t.c.
+This repository contains libraries for USB to I2C bridges which give the ability to connect I2C devices to a PC or Laptop. Thereby it is possible to cross develop I2C device software for target  systems like Raspberry Pi, Banana Pi, Odroid, e.t.c.
 
-Currently there exists a library for only onr vendor, but there are some others on the market and maybe, willcome in later.
+Currently there exists a library for only one vendor, but there are some others on the market and maybe, will come later.
 
 ## Pololu_USB-I2C_Bridge
 Supports two of Pololus products:
@@ -16,6 +15,7 @@ Furthermore, it's recommended to consult [jSerialCom documentation](https://faze
 ### Usage
 
 The API exposes several methods which should be (hopefully) self explantory:
+
 ```
 	public USB_I2C_BridgeImpl(final String aBridgeName) throws USB_I2C_Exception
 	
@@ -45,5 +45,7 @@ The API exposes several methods which should be (hopefully) self explantory:
 	U2iResponse i2cWriteRead(final int aAddress, 
 			final byte[] aWriteBuffer, final int aWriteOffset, final int aWriteLength,
 			final byte[] aReadBuffer,  final int aReadOffset,  final int aReadLength);
-
 ```
+
+Please have a look to the file __Example_DS1621__ in the __./examples/example__ folder to get an idea how to use this library.
+

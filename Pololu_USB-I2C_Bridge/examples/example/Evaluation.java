@@ -59,7 +59,7 @@ import lan.sdi.utility.HexUtils;
 // DOC
 // Created at 2026-06-19 16:07:52
 
-public class Example {
+public class Evaluation {
 
 	private static Logger logger; // = LoggerFactory.getLogger(Example.class.getName());
 
@@ -74,9 +74,9 @@ public class Example {
 		System.out.println("main(...)");
 
 	    System.setProperty("log4j2.configurationFile","./cfg/log4j2.xml");
-	    logger = LoggerFactory.getLogger(Example.class.getName());
+	    logger = LoggerFactory.getLogger(Evaluation.class.getName());
 
-		Example me = new Example();
+		Evaluation me = new Evaluation();
 		
 		me.init();
 		me.initDs1621();
@@ -247,7 +247,7 @@ public class Example {
 	/**
 	 * 
 	 */
-	public Example() {
+	public Evaluation() {
 		logger.debug("Example()");
 		
 		for (SerialPort p : SerialPort.getCommPorts()) {
