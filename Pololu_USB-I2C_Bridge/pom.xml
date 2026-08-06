@@ -17,7 +17,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<properties>
 	
-		<major.minor>1.0</major.minor>
+		<major.minor>1.1</major.minor>
 		<build.number>${buildNumber}</build.number>
 		<full.version>${major.minor}.${buildNumber}</full.version>
 		<destinationFolder>${settings.localRepository}/lan/sdi/usb2iic/${artifactId}</destinationFolder>
