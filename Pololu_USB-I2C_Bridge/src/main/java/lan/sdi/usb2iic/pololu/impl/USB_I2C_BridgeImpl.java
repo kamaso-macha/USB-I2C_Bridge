@@ -612,6 +612,17 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 		}
 
 	} // init()
+	
+	
+	
+	/**
+	 * Queries and returns the jSerial com port state. 
+	 * 
+	 * @return The current state of the com port
+	 * 
+	 */
+	
+	public boolean isOpen() { return comPort.isOpen(); }
 
 
 	/**

@@ -54,6 +54,8 @@ public interface USB_I2C_Bridge { // NOSONAR
 	PololuDeviceInfo getDeviceInfo();
 	U2iErrorInfo getLastError();
 
+	boolean isOpen();
+	
 	void resetSerialPort();
 	void setStm32Timing(final long aTiminggr, final GPIO_FMP_MODE aGpioFmpMode);
 
