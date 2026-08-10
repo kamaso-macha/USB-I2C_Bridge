@@ -41,6 +41,7 @@ import lan.sdi.usb2iic.pololu.U2iResponse;
 import lan.sdi.usb2iic.pololu.USB_I2C_Bridge;
 import lan.sdi.usb2iic.pololu.model.GPIO_FMP_MODE;
 import lan.sdi.usb2iic.pololu.model.I2C_MODE;
+import lan.sdi.usb2iic.pololu.model.U2I_ERROR_CODES;
 import lan.sdi.usb2iic.pololu.model.VCC_STATE;
 import lan.sdi.utility.HexUtils;
 
@@ -108,6 +109,11 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 	protected static final int RD_TIME_OUT		= 1000;		// milli seconds
 	protected static final int WR_TIME_OUT		= 1000;		// milli seconds
 	protected static final int BREAK_LENGTH		= 500;		// milli seconds
+	
+	/** Scan result constants */
+	public static final byte PRESENT = (byte) 0x000;
+	public static final byte ABSENT  = (byte) 0x0FF;
+	public static final byte ILLEGAL = (byte) 0x0FE;
 
 	/**
 	 * A reference to the instance of the serial port to be used.
@@ -154,7 +160,7 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 	 * current values.
 	 */
 	private void checkForErrors() {
-		logger.trace("checkForErrors(...)");
+//		logger.trace("checkForErrors(...)");
 		
 		errorCode = comPort.getLastErrorCode();
 		errorLocation = comPort.getLastErrorLocation();
@@ -184,6 +190,75 @@ public class USB_I2C_BridgeImpl implements USB_I2C_Bridge {		// NOSONAR
 		checkForErrors();
 
 	} // clearBus()
+	
+	
+	/**
+	 * Scan the bus for existing devices and returns the result in a byte array
+	 * of 128 bytes.<br>
+	 * Each byte represents the scan state of the related address (index 0 == addr 0, 
+	 * index 0x4f == addr 0x4F).<br>
+	 * The scan state is one of
+	 * <ul>
+	 * <li> ILLEGAL for reserved addresses if fullScan is NOT requested,
+	 * <li> ABSENT for addresses without assignment,
+	 * <li> 0x00 for a present device
+	 * <li> a value in the range of 1 .. 14 which indicates a present device with error response.<br>
+	 *  These response codes can be translated with U2I_ERROR_CODES from numeric to human readable value.
+	 * </ul> 
+	 * 
+	 * @param aFullScan Boolean flag, indicating whether the reserved addresses shall be scanned too.
+	 * 
+	 * @return a 128 bytes large byte array containing the scan result.
+	 */
+	@SuppressWarnings("unused")
+	public byte[] scanBus(final boolean aFullScan) {
+		logger.trace("scanBus(): aFullScan = {}", aFullScan);
+		
+		int first = aFullScan ? 0x000 : 0x008;
+		int last  = aFullScan ? 0x07F : 0x077;
+		
+		byte[] resultBuffer = new byte[128];
+		byte[] rdBuffer = new byte[1];
+		
+		byte[] wrBuffer = new byte[] {
+			WRITE_COMMAND,
+			(byte) 0x000,
+			(byte) 0x000,
+		};
+		
+		if(!aFullScan) {
+			
+			for(int i = 0, j = 0x78; i < 8; i++, j++) {
+				resultBuffer[i] = (byte) ILLEGAL;
+				resultBuffer[j] = (byte) ILLEGAL;
+			}
+			
+		} // fi
+		
+		for (; first <= last; first++) {
+			
+//			logger.debug(String.format("first: 0x%02X, resultBuffer size: 0x%02X", first, resultBuffer.length));
+
+			wrBuffer[1] = (byte) first;
+
+			int wrResult = comPort.writeBytes(wrBuffer, wrBuffer.length);
+			checkForErrors();
+
+			int rdResult = comPort.readBytes(rdBuffer, rdBuffer.length);
+			checkForErrors();
+			
+			if(rdBuffer[0] == U2I_ERROR_CODES.ERROR_ADDRESS_NACK.errorCode)
+				resultBuffer[first] = ABSENT;
+			else 
+				resultBuffer[first] = rdBuffer[0];
+
+//			logger.debug(String.format("first: 0x%02X, rdRes: 0x%02X, res: 0x%02X", first, rdBuffer[0], resultBuffer[first]));
+			
+		} // rof
+		
+		return resultBuffer;
+		
+	} // scanBus()
 	
 
 	/**

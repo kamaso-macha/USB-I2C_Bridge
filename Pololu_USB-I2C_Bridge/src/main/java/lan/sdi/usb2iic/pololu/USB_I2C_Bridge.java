@@ -61,6 +61,7 @@ public interface USB_I2C_Bridge { // NOSONAR
 
 
 	void clearBus();
+	byte[] scanBus(final boolean aFullScan);
 
 	U2iResponse setI2cMode(final I2C_MODE aMode);
 	U2iResponse setI2cTimeout(final int aTimeOut);

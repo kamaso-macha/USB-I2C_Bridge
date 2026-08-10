@@ -30,6 +30,7 @@
 
 package lan.sdi.usb2iic.pololu.impl;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,6 +51,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -73,7 +75,6 @@ import com.fazecast.jSerialComm.SerialPort;
 import lan.sdi.usb2iic.core.USB_I2C_Exception;
 import lan.sdi.usb2iic.pololu.U2iErrorInfo;
 import lan.sdi.usb2iic.pololu.U2iResponse;
-import lan.sdi.usb2iic.pololu.impl.USB_I2C_BridgeImpl;
 import lan.sdi.usb2iic.pololu.model.GPIO_FMP_MODE;
 import lan.sdi.usb2iic.pololu.model.I2C_MODE;
 import lan.sdi.usb2iic.pololu.model.VCC_STATE;
@@ -369,6 +370,120 @@ class USB_I2C_BridgeImplTest {
 	} // testClearBus()
 	
 
+	/**
+	 * Test method for {@link lan.sdi.usb2iic.pololu.impl.USB_I2C_BridgeImpl#digitalRead()}.
+	 */
+	@Test
+	void testScanBus() {
+		logger.info("testScanBus()");
+
+		// prepare reference
+		byte[] predeterminedValues = new byte[128];
+		byte[] reference = new byte[128];
+		
+		int tmp;
+		
+		for (int i = 0; i < 128; i++) {
+		
+			if (i % 16 == 0) {
+		        predeterminedValues[i] = 0;
+		        reference[i] = 0;
+		    } 
+			else if (i % 32 == 1) {
+				
+				tmp = (i % 14);
+				if(tmp == 8) tmp--; // Any value between 1 .. 14 but not 8
+		        predeterminedValues[i] = (byte) tmp;  
+		        reference[i] = (byte) tmp;  
+		        
+		    } 
+			else {
+		        predeterminedValues[i] = (byte) 0x08;
+		        reference[i] = (byte) 0x0FF;
+		    } // fi
+			
+		} // rof
+		
+		// there is exactly 1 read attempt BEFORE the scan starts. 
+		// So we must start by -1 for a correct result buffer alignment.
+		AtomicInteger callCounter = new AtomicInteger(-1);
+		AtomicInteger offsetValue = new AtomicInteger(0);
+
+		when(serialPortMock2.readBytes(any(byte[].class), eq(1))).thenAnswer(inv -> {
+			
+		    int count  = callCounter.get();
+		    int offset = offsetValue.get();
+		    
+		    if(count >= 0) {
+//				logger.debug(String.format("count = 0x%02X, offset = 0x%02X, idx = 0x%02X, value = 0x%02X", 
+//						count, offset, count + offset, predeterminedValues[count + offset]));
+
+				byte[] buf = inv.getArgument(0);
+			    
+			    if (buf != null && count < predeterminedValues.length) {
+			        buf[0] = predeterminedValues[count + offset];
+			    }
+			    
+		    } // fi
+		    
+		    callCounter.incrementAndGet();
+		    
+		    return 1;
+		    
+		});
+	
+		when(serialPortMock2.writeBytes(any(byte[].class), eq(3)))
+		.thenReturn(3);
+	
+
+        try (
+    		
+        	MockedStatic<SerialPort> staticMock = mockStaticSerialPorts();        		
+        	
+        ) {
+            	
+			cut = new USB_I2C_BridgeImpl(BRIDGE_NAME);
+			assertNotNull(cut);
+			
+			byte[] result;
+	
+			result = cut.scanBus(true);
+
+			logger.info(HexUtils.byteArrayToHex(predeterminedValues));
+			logger.info(HexUtils.byteArrayToHex(reference));
+			logger.info(HexUtils.byteArrayToHex(result));
+
+			assertEquals(128, result.length);
+			assertArrayEquals(reference, result);
+	
+			callCounter.set(0);
+			offsetValue.set(8);
+			
+			result = cut.scanBus(false);
+			
+			for(int i = 0, j = 0x078; i < 8; i++, j++) {
+				reference[i] = (byte) 0x0FE;
+				reference[j] = (byte) 0x0FE;
+			}
+
+			logger.info(HexUtils.byteArrayToHex(predeterminedValues));
+			logger.info(HexUtils.byteArrayToHex(reference));
+			logger.info(HexUtils.byteArrayToHex(result));
+
+			assertEquals(128, result.length);
+			assertArrayEquals(reference, result);
+			
+        }
+        catch (Exception e) {
+			
+        	logger.error("Ooops, an unexpected Exception flew by ...", e);
+			fail("Unexpected Exception");
+			
+		} // yrt
+	
+	} // testScanBus()
+	
+		
 	/**
 	 * Test method for {@link lan.sdi.usb2iic.pololu.impl.USB_I2C_BridgeImpl#close()}.
 	 */

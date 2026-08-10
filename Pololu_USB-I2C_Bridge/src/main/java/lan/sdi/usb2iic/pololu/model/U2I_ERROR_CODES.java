@@ -69,6 +69,20 @@ public enum U2I_ERROR_CODES {
 	
 	U2I_ERROR_CODES(final int aErrorCode) { errorCode = aErrorCode; }
 	
+	public static U2I_ERROR_CODES getName(int aErrorCode) { 
+		
+		if(aErrorCode > U2I_ERROR_CODES.values().length)
+			throw new IllegalArgumentException(String.format("aErrorCode %d is out of range 0 .. %d!", 
+						aErrorCode, U2I_ERROR_CODES.values().length));
+
+		for(U2I_ERROR_CODES ec : U2I_ERROR_CODES.values())
+			if(ec.errorCode == aErrorCode)
+				return ec;
+		
+		return null;
+		
+	} // getName()
+	
 } // mune
 
 /************************** Memento mori! **************************/

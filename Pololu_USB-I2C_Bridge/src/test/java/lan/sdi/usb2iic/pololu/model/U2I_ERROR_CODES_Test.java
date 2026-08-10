@@ -124,4 +124,29 @@ class U2I_ERROR_CODES_Test {
 	} // testU2iErrorCodes()
 
 	
+	/**
+	 * Test method for {@link lan.sdi.usb2iic.pololu.model.U2I_ERROR_CODES#getName(int)}.
+	 */
+	@Test
+	void testGetName() {
+		logger.info("testGetName()");
+		
+		assertEquals(U2I_ERROR_CODES.ERROR_NONE,				U2I_ERROR_CODES.getName(0));
+		assertEquals(U2I_ERROR_CODES.ERROR_PROTOCOL,			U2I_ERROR_CODES.getName(1));
+		assertEquals(U2I_ERROR_CODES.ERROR_GAP_2,				U2I_ERROR_CODES.getName(2));
+		assertEquals(U2I_ERROR_CODES.ERROR_TIMEOUT,				U2I_ERROR_CODES.getName(3));
+		assertEquals(U2I_ERROR_CODES.ERROR_ADDRESS_TIMEOUT,		U2I_ERROR_CODES.getName(4));
+		assertEquals(U2I_ERROR_CODES.ERROR_TX_TIMEOUT,			U2I_ERROR_CODES.getName(5));
+		assertEquals(U2I_ERROR_CODES.ERROR_RX_TIMEOUT,			U2I_ERROR_CODES.getName(6));
+		assertEquals(U2I_ERROR_CODES.ERROR_GAP_7,				U2I_ERROR_CODES.getName(7));
+		assertEquals(U2I_ERROR_CODES.ERROR_ADDRESS_NACK,		U2I_ERROR_CODES.getName(8));
+		assertEquals(U2I_ERROR_CODES.ERROR_TX_DATA_NACK,		U2I_ERROR_CODES.getName(9));
+		assertEquals(U2I_ERROR_CODES.ERROR_BUS_ERROR,			U2I_ERROR_CODES.getName(10));
+		assertEquals(U2I_ERROR_CODES.ERROR_ARBITRATION_LOST,	U2I_ERROR_CODES.getName(11));
+		assertEquals(U2I_ERROR_CODES.ERROR_GAP_12,				U2I_ERROR_CODES.getName(12));
+		assertEquals(U2I_ERROR_CODES.ERROR_NOT_SUPPORTED,		U2I_ERROR_CODES.getName(13));
+		
+	} // testGetName()
+
+	
 } // ssalc
