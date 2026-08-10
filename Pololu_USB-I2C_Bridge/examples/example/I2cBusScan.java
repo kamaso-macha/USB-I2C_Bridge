@@ -61,6 +61,7 @@ import lan.sdi.utility.HexUtils;
 
 public class I2cBusScan {
 
+	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(I2cBusScan.class.getName());
 
 	
