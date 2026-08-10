@@ -11,13 +11,16 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<groupId>lan.sdi.usb2iic</groupId>
 	<artifactId>USB_I2C_Bridge</artifactId>
 	
+	<!--  Do NOT forget to change property major.minor below! -->
 	<version>1.2-SNAPSHOT</version>
 	
 	<packaging>jar</packaging>
 	
 	<properties>
 	
-		<major.minor>1.1</major.minor>
+		<major.minor>1.2</major.minor>
+		
+		
 		<build.number>${buildNumber}</build.number>
 		<full.version>${major.minor}.${buildNumber}</full.version>
 		<destinationFolder>${settings.localRepository}/lan/sdi/usb2iic/${artifactId}</destinationFolder>
